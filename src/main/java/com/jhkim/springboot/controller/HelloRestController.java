@@ -8,16 +8,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HelloRestController {
 
-    @RequestMapping("/{num}")
-    public String total(@PathVariable int num) {
-        int res = 0;
-
-        for (int i = 1; i <= num; i++) {
-            res += i;
-        }
-
-        return "total : " + res;
-    }
+//    @RequestMapping("/{num}")
+//    public String total(@PathVariable int num) {
+//        int res = 0;
+//
+//        for (int i = 1; i <= num; i++) {
+//            res += i;
+//        }
+//
+//        return "total : " + res;
+//    }
 
     @RequestMapping("/user/{id}")
     public DataObject getUser(@PathVariable int id) {
