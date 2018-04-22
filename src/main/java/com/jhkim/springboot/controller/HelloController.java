@@ -1,9 +1,9 @@
 package com.jhkim.springboot.controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class HelloController {
@@ -14,12 +14,13 @@ public class HelloController {
     }
 
     @RequestMapping("/{num}")
-    public String total(@PathVariable int num, Model model) {
+    public ModelAndView total(@PathVariable int num, ModelAndView modelAndView) {
         int res = 0;
         for (int i = 1; i <= num; i++) {
             res += i;
         }
-        model.addAttribute("msg", "total : " + res);
-        return "total";
+        modelAndView.addObject("msg", "total : " + res);
+        modelAndView.setViewName("total");
+        return modelAndView;
     }
 }
