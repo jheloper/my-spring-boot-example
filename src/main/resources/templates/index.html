@@ -10,6 +10,10 @@
 </head>
 <body>
 <h1>Hello page</h1>
-<p class="msg">this is Thymeleaf sample page.</p>
+<p th:text="${msg}" class="msg">Please wait...</p>
+<form method="post" action="/">
+    <input type="text" name="name" th:value="${value}" />
+    <input type="submit" value="Click" />
+</form>
 </body>
 </html>
