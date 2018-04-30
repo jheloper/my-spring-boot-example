@@ -13,14 +13,31 @@ public class HelloController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(ModelAndView modelAndView) {
         modelAndView.setViewName("index");
-        modelAndView.addObject("msg", "이름을 적어서 전송해주세요.");
+        modelAndView.addObject("msg", "폼을 전송해주세요.");
         return modelAndView;
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public ModelAndView send(@RequestParam("name") String name, ModelAndView modelAndView) {
+    public ModelAndView send(
+            @RequestParam(value = "name", required = true) String name,
+            @RequestParam(value = "check", required = false) boolean check,
+            @RequestParam(value = "gender", required = false) String gender,
+            @RequestParam(value = "os", required = false) String os,
+            @RequestParam(value = "mobile", required = false) String[] mobile,
+            ModelAndView modelAndView) {
+
+        String res = "안녕하세요, " + name + "님! ";
+        try {
+            res += "check : " + check + " / gender : " + gender + " / os : " + os + " / mobile : " + mobile[0];
+            for (int i = 1; i < mobile.length; i++) {
+                res += ", " + mobile[i];
+            }
+        } catch (NullPointerException e) {
+            res += "null";
+        }
+
         modelAndView.setViewName("index");
-        modelAndView.addObject("msg", "안녕하세요, " + name + "님!");
+        modelAndView.addObject("msg", res);
         modelAndView.addObject("value", name);
         return modelAndView;
     }
