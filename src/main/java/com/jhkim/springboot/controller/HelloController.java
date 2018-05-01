@@ -52,4 +52,14 @@ public class HelloController {
         modelAndView.setViewName("total");
         return modelAndView;
     }
+
+    @RequestMapping("/other")
+    public ModelAndView other() {
+        return new ModelAndView("redirect:/");
+    }
+
+    @RequestMapping("/home")
+    public ModelAndView home() {
+        return new ModelAndView("forward:/");
+    }
 }
