@@ -1,14 +1,18 @@
 package com.jhkim.springboot.controller;
 
+import com.jhkim.springboot.model.User;
+import com.jhkim.springboot.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class HelloController {
+
+    @Autowired
+    UserRepository userRepository;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(ModelAndView modelAndView) {
@@ -61,5 +65,21 @@ public class HelloController {
     @RequestMapping("/home")
     public ModelAndView home() {
         return new ModelAndView("forward:/");
+    }
+
+    @RequestMapping(value = "/user", method = RequestMethod.GET)
+    public ModelAndView userForm(@ModelAttribute("formModel") User user, ModelAndView modelAndView) {
+        modelAndView.setViewName("user-form");
+        modelAndView.addObject("msg", "this is sample content.");
+        Iterable<User> list = userRepository.findAll();
+        modelAndView.addObject("datalist", list);
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/user", method = RequestMethod.POST)
+    @Transactional(readOnly = false)
+    public ModelAndView addUser(@ModelAttribute("formModel") User user, ModelAndView modelAndView) {
+        userRepository.saveAndFlush(user);
+        return new ModelAndView("redirect:/user");
     }
 }
