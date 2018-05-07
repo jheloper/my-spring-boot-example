@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.PostConstruct;
+
 @Controller
 public class HelloController {
 
@@ -79,6 +81,46 @@ public class HelloController {
     @RequestMapping(value = "/user", method = RequestMethod.POST)
     @Transactional(readOnly = false)
     public ModelAndView addUser(@ModelAttribute("formModel") User user, ModelAndView modelAndView) {
+        userRepository.saveAndFlush(user);
+        return new ModelAndView("redirect:/user");
+    }
+
+    @PostConstruct
+    public void initUser() {
+        User user1 = new User();
+        user1.setName("kim");
+        user1.setAge(25);
+        user1.setMail("kim@test.com");
+        user1.setMemo("this is sample data1");
+        userRepository.saveAndFlush(user1);
+
+        User user2 = new User();
+        user2.setName("lee");
+        user2.setAge(30);
+        user2.setMail("lee@test.com");
+        user2.setMemo("this is sample data2");
+        userRepository.saveAndFlush(user2);
+
+        User user3 = new User();
+        user3.setName("park");
+        user3.setAge(35);
+        user3.setMail("park@test.com");
+        user3.setMemo("this is sample data3");
+        userRepository.saveAndFlush(user3);
+    }
+
+    @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
+    public ModelAndView editUser(@ModelAttribute User user, @PathVariable int id, ModelAndView modelAndView) {
+        modelAndView.setViewName("edit-user");
+        modelAndView.addObject("title", "Edit user");
+        User foundUser = userRepository.findById((long)id);
+        modelAndView.addObject("formModel", foundUser);
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/edit", method = RequestMethod.POST)
+    @Transactional(readOnly = false)
+    public ModelAndView update(@ModelAttribute User user, ModelAndView modelAndView) {
         userRepository.saveAndFlush(user);
         return new ModelAndView("redirect:/user");
     }
