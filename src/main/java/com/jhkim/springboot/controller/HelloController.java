@@ -124,4 +124,20 @@ public class HelloController {
         userRepository.saveAndFlush(user);
         return new ModelAndView("redirect:/user");
     }
+
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+    public ModelAndView deleteUser(@PathVariable int id, ModelAndView modelAndView) {
+        modelAndView.setViewName("delete-user");
+        modelAndView.addObject("title", "Delete user");
+        User foundUser = userRepository.findById((long)id);
+        modelAndView.addObject("formModel", foundUser);
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @Transactional(readOnly = false)
+    public ModelAndView delete(@RequestParam long id, ModelAndView modelAndView) {
+        userRepository.delete(id);
+        return new ModelAndView("redirect:/user");
+    }
 }
