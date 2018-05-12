@@ -5,6 +5,8 @@ import com.jhkim.springboot.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -80,9 +82,21 @@ public class HelloController {
 
     @RequestMapping(value = "/user", method = RequestMethod.POST)
     @Transactional(readOnly = false)
-    public ModelAndView addUser(@ModelAttribute("formModel") User user, ModelAndView modelAndView) {
-        userRepository.saveAndFlush(user);
-        return new ModelAndView("redirect:/user");
+    public ModelAndView addUser(@ModelAttribute("formModel") @Validated User user, BindingResult result, ModelAndView modelAndView) {
+
+        ModelAndView res = null;
+        if (!result.hasErrors()) {
+            userRepository.saveAndFlush(user);
+            res = new ModelAndView("redirect:/user");
+        } else {
+            modelAndView.setViewName("user-form");
+            modelAndView.addObject("msg", "sorry, error is occured...");
+            Iterable<User> list = userRepository.findAll();
+            modelAndView.addObject("datalist", list);
+            res = modelAndView;
+        }
+
+        return res;
     }
 
     @PostConstruct
